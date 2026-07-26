@@ -1,6 +1,6 @@
 """
 eval/test_tone_fixer.py
-Pytest tests for the Email Tone Fixer service and API.
+Pytest tests for the Email Tone Fixer tones and models.
 Run: pytest eval/test_tone_fixer.py -v
 """
 

@@ -10,3 +10,9 @@ wheels/
 .venv
 .env
 
+# Test / coverage / Sonar artifacts
+.pytest_cache/
+.coverage
+coverage.xml
+.scannerwork/
+
