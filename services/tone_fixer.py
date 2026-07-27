@@ -4,12 +4,26 @@ Core service — all Claude API calls for tone fixing and analysis.
 """
 
 import json
+import re
 import anthropic
 from config import LLM_MODEL, LLM_MAX_TOKENS
 from core.tones import get_tone
 from core.models import FixToneResponse, AnalyseToneResponse, ToneAnalysis
 
 client = anthropic.Anthropic()
+
+_CODE_FENCE_RE = re.compile(r"```(?:json)?\s*(.*?)\s*```", re.DOTALL)
+
+
+def _parse_json_response(raw: str) -> dict:
+    """
+    Claude sometimes wraps its JSON reply in a ```json ... ``` code fence
+    even when told to respond with JSON only - strip it before parsing.
+    """
+    fence_match = _CODE_FENCE_RE.search(raw)
+    if fence_match:
+        raw = fence_match.group(1)
+    return json.loads(raw)
 
 # ── System prompts ─────────────────────────────────────────
 
@@ -77,7 +91,7 @@ def fix_tone(email: str, target_tone: str, context: str = None) -> FixToneRespon
     raw = response.content[0].text.strip()
 
     try:
-        result = json.loads(raw)
+        result = _parse_json_response(raw)
     except json.JSONDecodeError:
         result = {
             "rewritten_email": email,
@@ -112,7 +126,7 @@ def analyse_tone(email: str) -> AnalyseToneResponse:
     raw = response.content[0].text.strip()
 
     try:
-        result = json.loads(raw)
+        result = _parse_json_response(raw)
     except json.JSONDecodeError:
         result = {
             "detected_tone": "unknown",

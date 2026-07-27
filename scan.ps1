@@ -19,7 +19,7 @@ if (-not $env:SONAR_TOKEN) {
 Write-Host "Running tests with coverage..."
 uv run python -m pytest eval/ --cov=. --cov-report=xml
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Tests failed — fix them before scanning."
+    Write-Error "Tests failed - fix them before scanning."
     exit 1
 }
 
