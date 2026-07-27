@@ -16,4 +16,5 @@ wheels/
 coverage.xml
 .scannerwork/
 .deepeval/
+eval/deepeval_report/
 
